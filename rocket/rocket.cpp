@@ -17,7 +17,7 @@ double product [qPoints][3] = { {0, 0, 0},{0, 0, 0},{0, 0, 0},{0, 0, 0},{0, 0, 0
 
 double mReduse[3][3] = { {0.25,0,0},{0,0.25,0},{0,0,1} };
 double mReflect[3][3] = { {1,0,0},{0,-1,0},{0,0,1} };
-double mtanf[3][3] = { {1,0,0},{0,1,0},{-160,880,1} };
+double mtanf[3][3] = { {1,0,0},{0,1,0},{-160,440,1} };
 void multMutr(double matr[3][3]);
 // Отправить объявления функций, включенных в этот модуль кода:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
