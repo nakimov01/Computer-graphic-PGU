@@ -5,18 +5,18 @@
 #define MAX_LOADSTRING 100
 
 // Глобальные переменные:
-int cent(int);
+int cent(int z);
 HINSTANCE hInst;                                // текущий экземпляр
 WCHAR szTitle[MAX_LOADSTRING];                  // Текст строки заголовка
 WCHAR szWindowClass[MAX_LOADSTRING];            // имя класса главного окна
 const int qPoints = 11;
-double myCoord[11][3] = { {240,20,1},{260,60,1},{260,200,1}, {220,200,1}, {220,60,1},{200,140,1},{200,240,1} ,{220,180,1},{260,180,1},{280,140,1},{280,240,1} };
-double product [qPoints][3] = { {0, 0, 0},{0, 0, 0},{0, 0, 0},{0, 0, 0},{0, 0, 0},{0, 0, 0},{0, 0, 0},{0, 0, 0},{0, 0, 0}, {0, 0, 0}, {0, 0, 0} };
-
+double myCoord [qPoints][3] = { {240,20,1},{260,60,1},{260,200,1}, {220,200,1}, {220,60,1},{200,140,1},{200,240,1} ,{220,180,1},{260,180,1},{280,140,1},{280,240,1} };
+double product[qPoints][3] = { {0, 0, 0}, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
+//{ {0, 0, 0}, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } }
 
 double mReduse[3][3] = { {0.25,0,0},{0,0.25,0},{0,0,1} };
 double mReflect[3][3] = { {1,0,0},{0,-1,0},{0,0,1} };
-double mtanf[3][3] = { {1,0,0},{0,1,0},{-160,440,1} };
+double mtanf[3][3] = { {1,0,0},{0,1,0},{200,440,1} };
 double mtancentr[3][3] = { {1,0,0},{0,1,0},{(cent(0)*2),(cent(1)*2),1}};
 
 void multMutr(double matr[3][3]);
@@ -151,7 +151,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 UpdateWindow(hWnd);
                 break;
             case IDM_MIRROR:
-
                 multMutr(mReflect);
                 multMutr(mtancentr);
                 InvalidateRect(hWnd, NULL, TRUE);
@@ -225,25 +224,19 @@ void multMutr(double matr[3][3]) {
         for (int col = 0; col < 3; col++)
         {
             
-            
-            product[row][col] = myCoord[row][inner] * matr[inner][col];
-                      
+            for (int inner = 0; inner < 3; inner++)
+            {               
+                product[row][col] += myCoord[row][inner] * matr[inner][col];
+            }                                       
         }        
-    }
-    for (int row = 0; row < qPoints; row++)
+    } 
+    for (int i = 0; i < qPoints; i++)
     {
-     
-       myCoord[row][1] = product[row][1];
-    }
- /*   for (int col = 0; col < 3; col++)
-    {
-        for (int inner = 0; inner < 3; inner++)
+        for (int j = 0; j < 3; j++)
         {
-
-
+            myCoord[i][j] = product[i][j];
         }
-
-    }*/
+    }
 }
 int cent(int z) {
 
