@@ -13,7 +13,7 @@
 #define IDM_MOVE				50
 #define IDM_MIRROR				51
 #define IDM_SCALE				52
-
+#define IDM_ORIGIN				53
 #define IDI_ROCKET			107
 #define IDI_SMALL				108
 #define IDC_ROCKET			109
