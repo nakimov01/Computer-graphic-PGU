@@ -6,29 +6,27 @@
 
 // Глобальные переменные:
 int cent(int z);
+int size(int z);
+void multMutr(double matr[3][3]);
 HINSTANCE hInst;                                // текущий экземпляр
 WCHAR szTitle[MAX_LOADSTRING];                  // Текст строки заголовка
-WCHAR szWindowClass[MAX_LOADSTRING];            // имя класса главного окна
+WCHAR szWindowClass[MAX_LOADSTRING];            // имя класса главного 
 const int qPoints = 11;
-double myCoord [qPoints][3] = { {240,20,1},{260,60,1},{260,200,1},
-                                {220,200,1}, {220,60,1},{200,140,1},
-                                {200,240,1} ,{220,180,1},{260,180,1},
-                                {280,140,1},{280,240,1} };
-double product[qPoints][3] = { {0, 0, 0}, { 0, 0, 0 }, { 0, 0, 0 },
-                             { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, 
-                             { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 },
-                             { 0, 0, 0 }, { 0, 0, 0 } };
-double back[qPoints][3] = { {240,20,1},{260,60,1},{260,200,1},
+double myCoord [qPoints][3] = { {240,20,1},{260,60,1},{260,200,1}, // Матрица координат объекта
                                 {220,200,1}, {220,60,1},{200,140,1},
                                 {200,240,1} ,{220,180,1},{260,180,1},
                                 {280,140,1},{280,240,1} };
 
-double mReduse[3][3] = { {0.25,0,0},{0,0.25,0},{0,0,1} };
-double mReflect[3][3] = { {1,0,0},{0,-1,0},{0,0,1} };
-double mtanf[3][3] = { {1,0,0},{0,1,0},{200,440,1} };
-double mtancentr[3][3] = { {1,0,0},{0,1,0},{(cent(2)),(cent(1)*2),1}};
+double back[qPoints][3] = { {240,20,1},{260,60,1},{260,200,1}, // Матрица начальных координат
+                                {220,200,1}, {220,60,1},{200,140,1},
+                                {200,240,1} ,{220,180,1},{260,180,1},
+                                {280,140,1},{280,240,1} };
 
-void origin()
+double mReduse[3][3] = { {0.25,0,0},{0,0.25,0},{0,0,1} }; // Матрица уменьшение объекта
+double mReflect[3][3] = { {1,0,0},{0,-1,0},{0,(cent(1)*2),1} }; // Матрица отражения относительно оси X
+double mtanf[3][3] = { {1,0,0},{0,1,0},{-size(0),size(1)*2,1}}; // Матрица переноса
+
+void origin() //Функция возвращения к оригинальным координатам
 {
     for (int i = 0; i < qPoints; i++)
     {
@@ -40,8 +38,6 @@ void origin()
 
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------
-
-void multMutr(double matr[3][3]);
 // Отправить объявления функций, включенных в этот модуль кода:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
@@ -168,24 +164,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // Разобрать выбор в меню:
             switch (wmId)
             {
-            case IDM_MOVE:
+            case IDM_MOVE:    // Перемещение объекта   
+                mtanf[2][0] = -size(0);
+                mtanf[2][1] = size(1)*2;
                 multMutr(mtanf);
                 InvalidateRect(hWnd, NULL, TRUE);
                 UpdateWindow(hWnd);
                 break;
-            case IDM_SCALE:
+            case IDM_SCALE:  // Уменьшение объекта в 4 раза   
                 multMutr(mReduse);
                 InvalidateRect(hWnd, NULL, TRUE);
                 UpdateWindow(hWnd);
                 break;
-            case IDM_ORIGIN:
+            case IDM_ORIGIN: // Возвращения к оригинальным координатам 
                 origin();
                 InvalidateRect(hWnd, NULL, TRUE);
                 UpdateWindow(hWnd);
                 break;
-            case IDM_MIRROR:
+            case IDM_MIRROR: // Отражение относительно оси X
+                mReflect[2][1] = cent(1)*2;
                 multMutr(mReflect);
-                multMutr(mtancentr);
                 InvalidateRect(hWnd, NULL, TRUE);
                 UpdateWindow(hWnd);
                 break;
@@ -201,10 +199,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_PAINT:
+
         {
             PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Добавьте сюда любой код прорисовки, использующий HDC...
+            HDC hdc = BeginPaint(hWnd, &ps);                    //Построение объекта
             MoveToEx(hdc, myCoord[0][0], myCoord[0][1], 0);
             LineTo(hdc, myCoord[1][0], myCoord[1][1]);
             LineTo(hdc, myCoord[2][0], myCoord[2][1]);
@@ -253,8 +251,8 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------
-void multMutr(double matr[3][3]) {
-    double d[17][3];
+void multMutr(double matr[3][3]) {                       //Функция перемножения матриц
+    double d[11][3];
     for (int row = 0; row < qPoints; row++)
     {
         for (int col = 0; col < 3; col++)
@@ -275,7 +273,7 @@ void multMutr(double matr[3][3]) {
     }
 }
 
-int cent(int z) {
+int cent(int z) {                                      //Функция нахождения цента объекта
 
     int max, min;
     max=min = myCoord[0][z];
@@ -292,6 +290,25 @@ int cent(int z) {
             max = myCoord[i][z];
         }
     }    
-    return (max + min)/2;
+    return (max+min)/2;
+}
+int size(int z) {                                      //Функция нахождения длины объекта
+
+    int max, min;
+    max = min = myCoord[0][z];
+
+    for (int i = 0; i < qPoints; i++)
+    {
+        if (min > myCoord[i][z])
+        {
+            min = myCoord[i][z];
+        }
+
+        if (max < myCoord[i][z])
+        {
+            max = myCoord[i][z];
+        }
+    }
+    return max-min;
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------
